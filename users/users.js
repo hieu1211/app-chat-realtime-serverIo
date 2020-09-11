@@ -10,7 +10,7 @@ module.exports = {
 
     getAllUsersOfRoom: (room) =>{
         return users.filter((user)=>{
-            user.room === room;
+            return user.room === room;
         })
     },
 
