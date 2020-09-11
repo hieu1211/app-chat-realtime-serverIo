@@ -18,16 +18,21 @@ io.on('connection',(socket)=>{
         users.add(socket.id,name,room);
         socket.join(room);
         console.log(`${socket.id} has connected`)
+        socket.broadcast.to(room).emit("messenger",{name:"admin",mes:`${name} has joined!`})
+        const listUsers = users.getAllUsersOfRoom(room);
+        io.emit("list-users",listUsers)
     })
 
     socket.emit("messenger",{name:"admin",mes:"Welcome to the room"})
     
     socket.on("messenger",(data)=>{
         let user = users.getUser(socket.id);
-        socket.broadcast.to(user.room).emit("messenger",{name:user.name,mes:data})
+        if(user)
+            socket.broadcast.to(user.room).emit("messenger",{name:user.name,mes:data})
     })
 
     socket.on("disconnect",()=>{
+        users.RemoveUser(socket.id);
         console.log(`${socket.id} has disconnected`)
     })
 })
